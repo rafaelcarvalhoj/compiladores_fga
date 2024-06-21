@@ -1,0 +1,78 @@
+program TesteAnalisadorLexicoLongo;
+
+{ Este é um comentário de uma linha }
+(* Este é um comentário de várias linhas
+   que deve ser ignorado pelo analisador léxico. *)
+
+var
+  numero1, numero2, resultado: integer;
+  texto: string;
+  i: integer;
+  condicao: boolean;
+
+begin
+  (* Inicialização de variáveis *)
+  numero1 := 1000000000; { Teste com número grande }
+  numero2 := -250;
+  resultado := numero1 + numero2 * 2;
+  texto := 'Texto de exemplo com ''aspas'' e caracteres especiais como !@#$%^&*()_+';
+  condicao := true;
+
+  writeln('Resultado da operação: ', resultado);
+  writeln('Texto armazenado: ', texto);
+
+  { Teste de operadores compostos e operadores simples }
+  resultado := resultado div 3;
+  resultado := resultado mod 10;
+  resultado := resultado + numero1 - numero2 * 2;
+
+  (* Teste de estrutura de controle *)
+  if (numero1 > numero2) and (condicao = true) then
+  begin
+    writeln('numero1 é maior que numero2 e a condição é verdadeira.');
+  end
+  else
+  begin
+    writeln('numero1 não é maior que numero2 ou a condição é falsa.');
+  end;
+
+  { Teste de loop for }
+  for i := 1 to 10 do
+  begin
+    writeln('Valor de i: ', i);
+  end;
+
+  { Teste de loop while }
+  i := 0;
+  while i < 5 do
+  begin
+    writeln('Loop while, i: ', i);
+    i := i + 1;
+  end;
+
+  { Teste de loop repeat-until }
+  repeat
+    writeln('Loop repeat-until, i: ', i);
+    i := i - 1;
+  until i = 0;
+
+  { Teste de aninhamento de loops e condicionais }
+  for i := 1 to 3 do
+  begin
+    writeln('Loop externo, i: ', i);
+    for resultado := 1 to 2 do
+    begin
+      writeln('  Loop interno, resultado: ', resultado);
+      if resultado = 1 then
+      begin
+        writeln('    Condição no loop interno satisfeita');
+      end;
+    end;
+  end;
+
+  { Teste de strings não fechadas e operadores misturados }
+  texto := 'String não fechada
+  resultado := numero1 + numero2 ++ -- **;
+
+end.
+
