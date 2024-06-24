@@ -7,6 +7,10 @@
 
 _number -?[0-9]+(\.[0-9]+)?
 _alphnumeric [a-zA-Z][a-zA-Z0-9_]*
+_comment \(\*((.[^\*][^\)]*\*?[^\)])|[\n\t ])\*+\)
+_operator "+"|"-"|"*"|"/"|"<"|">"|"="
+_compound_operator "<>"|"<="|">="|":="
+_delimeter "("|")"|"["|"]"|";"|":"|","|"."
 
 %%
 
@@ -33,26 +37,46 @@ _alphnumeric [a-zA-Z][a-zA-Z0-9_]*
 "read"      { keyword++; }
 "write"     { keyword++; }
 
-"<>"|"<="|">="|":="	{ comop++; }
+{_compound_operator} {
+	comop++;
+}
 
-\+|-|\*|\/|<|>|=     { op++; }
+{_operator} {
+	//printf("OPERATOR: %s\n", yytext);
+	op++;
+}
 
 [ \t]+  { /* WHITE SPACES */ }
 
-\n		{ line++; }
+\n {
+	line++;
+}
 
-[a-zA-Z][a-zA-Z0-9_]*	{ id++; }
+{_alphnumeric} {
+	//printf("IDENTIFIER: %s\n", yytext);
+	id++;
+}
 
-[0-9]+(\.[0-9]+)?		{ number++; }
+{_number} {
+	//printf("NUMBER: %s\n", yytext);
+	number++;
+}
 
-\(|\)|\[|\]|;|:|,|\.	{ delimiter++; }
+{_comment} {
+	//printf("COMMENTS: %s\n", yytext);
+	comments++;
+}
 
-\(\*([^*]|\*+[^)*])*\*+\)	{ comments++; } 
+{_delimeter} {
+	delimiter++;
+}
 
-.  { unknown++; }
+.  { 
+	//printf("UNKNOWN: %s\n", yytext);
+	unknown++;
+}
 
 %%
-
 int main(int argc, char** argv){
 		if(argc > 1) {
         if(!(yyin = fopen(argv[1], "r"))) {
