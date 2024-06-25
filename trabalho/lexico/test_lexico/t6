@@ -1,0 +1,101 @@
+program GiantPascalExample;
+
+uses SysUtils;
+
+const
+  MAX = 1000;
+
+type
+  TIntegerArray = array[1..MAX] of Integer;
+
+var
+  i, j: Integer;
+  numberArray: TIntegerArray;
+  sum: Integer;
+  inputFile, outputFile: TextFile;
+  filename: string;
+  textLine: string;
+
+procedure FillArray(var arr: TIntegerArray);
+begin
+  Randomize;
+  for i := 1 to MAX do
+    arr[i] := Random(1000); // Random number between 0 and 999
+end;
+
+function SumArray(arr: TIntegerArray): Integer;
+var
+  total, i: Integer;
+begin
+  total := 0;
+  for i := 1 to MAX do
+    total := total + arr[i];
+  SumArray := total;
+end;
+
+procedure WriteArrayToFile(arr: TIntegerArray; var f: TextFile);
+var
+  i: Integer;
+begin
+  for i := 1 to MAX do
+    writeln(f, arr[i]);
+end;
+
+procedure ReadArrayFromFile(var arr: TIntegerArray; var f: TextFile);
+var
+  i: Integer;
+begin
+  i := 1;
+  while not eof(f) do
+  begin
+    readln(f, arr[i]);
+    Inc(i);
+  end;
+end;
+
+procedure ProcessTextFile(var inputFile, outputFile: TextFile);
+var
+  line: string;
+  lineCount: Integer;
+begin
+  lineCount := 0;
+  while not eof(inputFile) do
+  begin
+    readln(inputFile, line);
+    writeln(outputFile, 'Line ', lineCount, ': ', line);
+    Inc(lineCount);
+  end;
+end;
+
+begin
+  // Step 1: Fill array with random numbers
+  FillArray(numberArray);
+
+  // Step 2: Calculate the sum of the array
+  sum := SumArray(numberArray);
+  writeln('Sum of array elements: ', sum);
+
+  // Step 3: Write the array to a file
+  filename := 'array_output.txt';
+  AssignFile(outputFile, filename);
+  Rewrite(outputFile);
+  WriteArrayToFile(numberArray, outputFile);
+  CloseFile(outputFile);
+
+  // Step 4: Read the array back from the file
+  AssignFile(inputFile, filename);
+  Reset(inputFile);
+  ReadArrayFromFile(numberArray, inputFile);
+  CloseFile(inputFile);
+
+  // Step 5: Process a text file
+  AssignFile(inputFile, 'input.txt');
+  AssignFile(outputFile, 'output.txt');
+  Reset(inputFile);
+  Rewrite(outputFile);
+  ProcessTextFile(inputFile, outputFile);
+  CloseFile(inputFile);
+  CloseFile(outputFile);
+
+  writeln('Processing complete. Check output files for results.');
+end.

@@ -14,6 +14,7 @@ void yyerror(const char* s);
 %token ADD SUB MUL DIV ABS
 %token EOL
 %token DOT SEMICOLON L_PAREN R_PAREN ATTR
+
 %%
 
 program:

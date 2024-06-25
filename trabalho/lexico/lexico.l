@@ -2,47 +2,34 @@
 
 %{
     #include <stdio.h>
-    int keyword = 0, id = 0, number = 0, op = 0, comop = 0, delimiter = 0, comments = 0, unknown = 0, line = 2;
+    int keyword = 0, id = 0, number = 0, op = 0, comop = 0, delimiter = 0, comments = 0, unknown = 0, line = 1;
 %}
 
-_number -?[0-9]+(\.[0-9]+)?
-_alphnumeric [a-zA-Z][a-zA-Z0-9_]*
-_comment \(\*((.[^\*][^\)]*\*?[^\)])|[\n\t ])\*+\)
+/* Definition Section */
+
+_keyword "and"|"array"|"begin"|"div"|"do"|"else"|"end"|"function"|"goto"|"if"|"label"|"not"|"of"|"or"|"procedure"|"program"|"then"|"type"|"var"|"while"|"read"|"write"
+_number [0-9]+(\.[0-9]+)?
+_alphnumeric [a-zA-Z][a-zA-Z0-9]*
+/* _comment \(\*((.[^\*][^\)]*\*?[^\)])|[\n\t ])\*+\) */
+_comment \(\*(\*^\)|[^\*])*\*+\)
 _operator "+"|"-"|"*"|"/"|"<"|">"|"="
 _compound_operator "<>"|"<="|">="|":="
 _delimeter "("|")"|"["|"]"|";"|":"|","|"."
 
 %%
 
-"and"       { keyword++; }
-"array"     { keyword++; }
-"begin"     { keyword++; }
-"div"       { keyword++; }
-"do"        { keyword++; }
-"else"      { keyword++; }
-"end"       { keyword++; }
-"function"  { keyword++; }
-"goto"      { keyword++; }
-"if"        { keyword++; }
-"label"     { keyword++; }
-"not"       { keyword++; }
-"of"        { keyword++; }
-"or"        { keyword++; }
-"procedure" { keyword++; }
-"program"   { keyword++; }
-"then"      { keyword++; }
-"type"      { keyword++; }
-"var"       { keyword++; }
-"while"     { keyword++; }
-"read"      { keyword++; }
-"write"     { keyword++; }
+{_keyword} {
+	//printf("%d.KEYWORD: %s\n", line, yytext);
+	keyword++;
+}
 
 {_compound_operator} {
+	//printf("COMPOUND OPERATOR: %s\n", yytext);
 	comop++;
 }
 
 {_operator} {
-	//printf("OPERATOR: %s\n", yytext);
+	//printf("%d.OPERATOR: %s\n",line, yytext);
 	op++;
 }
 
@@ -68,10 +55,11 @@ _delimeter "("|")"|"["|"]"|";"|":"|","|"."
 }
 
 {_delimeter} {
+	//printf("DELIMITER: %s\n", yytext);
 	delimiter++;
 }
 
-.  { 
+. { 
 	//printf("UNKNOWN: %s\n", yytext);
 	unknown++;
 }
@@ -80,8 +68,8 @@ _delimeter "("|")"|"["|"]"|";"|":"|","|"."
 int main(int argc, char** argv){
 		if(argc > 1) {
         if(!(yyin = fopen(argv[1], "r"))) {
-        perror(argv[1]);
-        return (1);
+					perror(argv[1]);
+					return (1);
         }
     }
 		yylex();
