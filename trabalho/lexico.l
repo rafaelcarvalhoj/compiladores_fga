@@ -19,8 +19,21 @@ end { return tk_end; }
 and { return tk_and; }
 or { return tk_or; }
 not { return tk_not; }
+goto { return tk_goto; }
+if { return tk_if; }
+then { return tk_then; }
+else { return tk_else; }
+while { return tk_while; }
+do { return tk_do; }
+var { return tk_var; }
+type { return tk_type; }
+label { return tk_label; }
+procedure { return tk_procedure; }
+function { return tk_function; }
 
 [a-zA-Z][a-zA-Z0-9]* { return tk_id; }
+
+\:= { return tk_attribuition; }
 
 \( { return tk_lparen; }
 \) { return tk_rparen; }
